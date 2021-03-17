@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : Singleton<PlayerController>
+public class Target : MonoBehaviour
 {
-    protected PlayerController() { }
-
     private void Start()
     {
 
