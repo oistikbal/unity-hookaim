@@ -53,7 +53,7 @@ public class PlayerController : Singleton<PlayerController>
         Vector3 velocityBuffer = Vector3.zero;
         while (transform.position != hit.point)
         {
-            transform.position = Vector3.SmoothDamp(transform.position, hit.point, ref velocityBuffer, Time.fixedDeltaTime, 4f);
+            transform.position = Vector3.SmoothDamp(transform.position, hit.point, ref velocityBuffer, Time.fixedDeltaTime, 10f);
             if (Mathf.Abs(transform.position.z - hit.point.z) < 2f)
                 break;
             yield return null;
