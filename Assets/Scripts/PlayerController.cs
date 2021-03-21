@@ -58,6 +58,7 @@ public class PlayerController : Singleton<PlayerController>
             yield return null;
         }
         GameManager.SetAim();
+        transform.rotation = hit.transform.rotation;
     }
 
     void RotateArrow() 
