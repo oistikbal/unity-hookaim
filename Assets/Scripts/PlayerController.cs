@@ -7,11 +7,16 @@ public class PlayerController : Singleton<PlayerController>
 {
     protected PlayerController() { }
 
-    GameObject m_arrow;
+    public static GameObject m_arrow;
+
+    void Awake()
+    {
+        m_arrow = GameObject.Find("Arrow");
+    }
 
     void Start()
     {
-        m_arrow = GameObject.Find("Arrow");
+
     }
 
     void Update()
@@ -38,6 +43,7 @@ public class PlayerController : Singleton<PlayerController>
         RaycastHit hit;
         if (Physics.Raycast(transform.position, m_arrow.transform.forward, out hit, 100f, 1 << LayerMask.NameToLayer("target")))
         {
+            GameManager.SetRun();
             StartCoroutine(Move(hit));
         }
     }
@@ -46,9 +52,12 @@ public class PlayerController : Singleton<PlayerController>
     {
         while (transform.position != hit.point)
         {
-            transform.position = Vector3.MoveTowards(transform.position, hit.point - Vector3.forward * 2f, Time.fixedDeltaTime);
+            transform.position = Vector3.Lerp(transform.position, hit.point, Time.fixedDeltaTime * 0.3f);
+            if (Mathf.Abs(transform.position.z - hit.point.z) < 2f)
+                break;
             yield return null;
         }
+        GameManager.SetAim();
     }
 
     void RotateArrow() 
