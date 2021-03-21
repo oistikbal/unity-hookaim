@@ -37,14 +37,16 @@ public class PlayerController : Singleton<PlayerController>
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, m_arrow.transform.forward, out hit, 100f, 1 << LayerMask.NameToLayer("target")))
+        {
             StartCoroutine(Move(hit));
+        }
     }
 
     IEnumerator Move(RaycastHit hit) 
     {
         while (transform.position != hit.point)
         {
-            transform.position = Vector3.MoveTowards(transform.position, hit.point, Time.fixedDeltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, hit.point - Vector3.forward * 2f, Time.fixedDeltaTime);
             yield return null;
         }
     }
