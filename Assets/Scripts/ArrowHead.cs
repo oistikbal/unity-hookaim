@@ -23,6 +23,11 @@ public class ArrowHead : Singleton<ArrowHead>
 
     void FixedUpdate()
     {
+        Rotate();
+    }
+
+    void Rotate() 
+    {
         m_col1 = new Vector4(Mathf.Cos(Time.time * m_turnSpeed), 0, -Mathf.Sin(Time.time * m_turnSpeed), 0);
         m_col2 = new Vector4(0, 1f, 0, 0);
         m_col3 = new Vector4(Mathf.Sin(Time.time * m_turnSpeed), 0, Mathf.Cos(Time.time * m_turnSpeed), 0);
