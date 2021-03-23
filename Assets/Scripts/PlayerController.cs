@@ -6,6 +6,7 @@ using System;
 public class PlayerController : Singleton<PlayerController>
 {
     protected PlayerController() { }
+    Vector3 m_velocityBuffer = new Vector3();
 
     public static GameObject m_arrow;
 
@@ -41,19 +42,19 @@ public class PlayerController : Singleton<PlayerController>
     void Shoot() 
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, m_arrow.transform.forward, out hit, 100f, 1 << LayerMask.NameToLayer("target")))
+        int mask = 1 << LayerMask.NameToLayer("enemy") | 1 << LayerMask.NameToLayer("box");
+        if (GameManager.IsAim()  && Physics.Raycast(transform.position, m_arrow.transform.forward, out hit, 100f, mask))
         {
-            GameManager.SetRun();
             StartCoroutine(Move(hit));
         }
     }
 
     IEnumerator Move(RaycastHit hit) 
     {
-        Vector3 velocityBuffer = Vector3.zero;
+        GameManager.SetRun();
         while (transform.position != hit.point)
         {
-            transform.position = Vector3.SmoothDamp(transform.position, hit.point, ref velocityBuffer, Time.fixedDeltaTime, 10f);
+            transform.position = Vector3.SmoothDamp(transform.position, hit.point, ref m_velocityBuffer, Time.fixedDeltaTime, 10f);
             if (Mathf.Abs(transform.position.z - hit.point.z) < 2f)
                 break;
             yield return null;
