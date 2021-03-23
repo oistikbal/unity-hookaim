@@ -12,12 +12,12 @@ public class PlayerController : Singleton<PlayerController>
 
     void Awake()
     {
-        m_arrow = GameObject.Find("Arrow");
+
     }
 
     void Start()
     {
-
+        m_arrow = GameObject.Find("Arrow");
     }
 
     void Update()
@@ -27,7 +27,7 @@ public class PlayerController : Singleton<PlayerController>
 
     void FixedUpdate()
     {
-        RotateArrow();        
+        
     }
 
     void PlayerInput() 
@@ -63,8 +63,4 @@ public class PlayerController : Singleton<PlayerController>
         transform.rotation = hit.transform.rotation;
     }
 
-    void RotateArrow() 
-    {
-        m_arrow.transform.Rotate(Vector3.up, 5);
-    }
 }

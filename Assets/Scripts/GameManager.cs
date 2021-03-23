@@ -12,7 +12,7 @@ public class GameManager : Singleton<GameManager>
     protected GameManager() { }
 
     public enum GameState { MENU, STOP, AIM, RUN, FIGHT }
-    private static GameState gameState = new GameState();
+    private static GameState gameState = GameState.AIM;
 
     static GameObject m_camAim;
     static GameObject m_camRun;
@@ -25,7 +25,6 @@ public class GameManager : Singleton<GameManager>
     {
         m_camAim = GameObject.Find("CamAim");
         m_camRun = GameObject.Find("CamRun");
-        SetAim();
     }
 
     static public GameState CurrentState() { return gameState; }
