@@ -38,7 +38,7 @@ public class Arrow : Singleton<Arrow>
 {
     protected Arrow() { }
 
-    Vector3 m_positionDiff;
+    Vector3 m_relativePosition;
 
     Vector4 m_col1;
     Vector4 m_col2;
@@ -52,7 +52,7 @@ public class Arrow : Singleton<Arrow>
 
     void Start()
     {
-        m_positionDiff = transform.position - PlayerController.Instance.transform.position;
+        m_relativePosition = transform.position - PlayerController.Instance.transform.position;
     }
 
     void FixedUpdate()
@@ -72,7 +72,7 @@ public class Arrow : Singleton<Arrow>
         m_rotMatrix = new Matrix4x4(m_col1, m_col2, m_col3, m_col4);
 
 
-        transform.position = m_rotMatrix.MultiplyPoint(m_positionDiff) + PlayerController.Instance.transform.position;
+        transform.position = m_rotMatrix.MultiplyPoint(m_relativePosition) + PlayerController.Instance.transform.position;
         transform.rotation = Quaternion.LookRotation(transform.position - PlayerController.Instance.transform.position);
     }
 
