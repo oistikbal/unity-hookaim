@@ -60,7 +60,7 @@ public class PlayerController : Singleton<PlayerController>
             yield return null;
         }
         GameManager.SetAim();
-        transform.rotation = hit.transform.rotation;
+        transform.rotation = Quaternion.LookRotation(hit.point);
     }
 
 }
