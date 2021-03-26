@@ -4,7 +4,7 @@ using UnityEngine;
 
 struct Angle
 {
-    private const float m_ClampMaximum = Mathf.PI;
+    private const float m_ClampMaximum = Mathf.PI / 2f;
     private float m_Clamp;
     private bool m_reverse;
 
@@ -13,7 +13,7 @@ struct Angle
         get
         {
             if (m_reverse)
-                return Mathf.PI - m_Clamp;
+                return m_ClampMaximum - m_Clamp;
             else
                 return m_Clamp;
         }
