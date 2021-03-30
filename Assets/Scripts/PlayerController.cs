@@ -31,7 +31,6 @@ public class PlayerController : Singleton<PlayerController>
         {
             Shoot();
         }
-
     }
 
     void Shoot() 

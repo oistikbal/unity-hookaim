@@ -33,14 +33,14 @@ public class GameManager : Singleton<GameManager>
     {
         m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
         m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
-        PlayerController.m_arrow.SetActive(true);
+        Arrow.Instance.gameObject.SetActive(true);
         gameState = GameState.AIM;
     }
 
     static public void SetRun() 
     {
         m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
-        PlayerController.m_arrow.SetActive(false);
+        Arrow.Instance.gameObject.SetActive(false);
         gameState = GameState.RUN;
     }
         
