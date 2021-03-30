@@ -72,7 +72,7 @@ public class Arrow : Singleton<Arrow>
         m_rotMatrix = new Matrix4x4(m_col1, m_col2, m_col3, m_col4);
 
 
-        transform.position = m_rotMatrix.MultiplyPoint(m_relativePosition) + PlayerController.Instance.transform.position;
+        transform.position = m_rotMatrix.MultiplyPoint(Quaternion.AngleAxis(PlayerController.Instance.transform.rotation.eulerAngles.y, Vector3.up) * m_relativePosition) + PlayerController.Instance.transform.position;
         transform.rotation = Quaternion.LookRotation(transform.position - PlayerController.Instance.transform.position);
     }
 
