@@ -8,16 +8,12 @@ public class PlayerController : Singleton<PlayerController>
     protected PlayerController() { }
     Vector3 m_velocityBuffer = new Vector3();
 
-    public static GameObject m_arrow;
-
     void Awake()
     {
-
     }
 
     void Start()
     {
-        m_arrow = GameObject.Find("Arrow");
     }
 
     void Update()
@@ -27,7 +23,6 @@ public class PlayerController : Singleton<PlayerController>
 
     void FixedUpdate()
     {
-        
     }
 
     void PlayerInput() 
@@ -43,7 +38,7 @@ public class PlayerController : Singleton<PlayerController>
     {
         RaycastHit hit;
         int mask = 1 << LayerMask.NameToLayer("enemy") | 1 << LayerMask.NameToLayer("box");
-        if (GameManager.IsAim()  && Physics.Raycast(transform.position, m_arrow.transform.forward, out hit, 100f, mask))
+        if (GameManager.IsAim()  && Physics.Raycast(transform.position, Arrow.Instance.transform.forward, out hit, 100f, mask))
         {
             StartCoroutine(Move(hit));
         }
