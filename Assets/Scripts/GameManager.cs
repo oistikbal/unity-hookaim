@@ -5,26 +5,25 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     /*  Default Cam priorties
+     *  Current = 10
      *  Aim = 5
      *  Run = 4
      *  fight = 3
      */
     protected GameManager() { }
 
-    public enum GameState { MENU, STOP, AIM, RUN, FIGHT }
-    private static GameState gameState = GameState.AIM;
+    public enum GameState {AIM, RUN, FIGHT, MENU, STOP }
+    private static GameState gameState;
 
     static GameObject m_camAim;
     static GameObject m_camRun;
-
-    void Awake()
-    {
-    }
+    static GameObject m_camFight;
 
     void Start()
     {
         m_camAim = GameObject.Find("CamAim");
         m_camRun = GameObject.Find("CamRun");
+        m_camFight = GameObject.Find("CamFight");
     }
 
     static public GameState CurrentState() { return gameState; }
@@ -37,16 +36,32 @@ public class GameManager : Singleton<GameManager>
         gameState = GameState.AIM;
     }
 
-    static public void SetRun() 
-    {
-        m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
-        Arrow.Instance.gameObject.SetActive(false);
-        gameState = GameState.RUN;
-    }
-        
     static public void SetMenu() { gameState = GameState.MENU; }
 
     static public void SetStop() { gameState = GameState.STOP; }
+
+    static public void SetRun()
+    {
+        m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
+        m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
+        Arrow.Instance.gameObject.SetActive(false);
+        gameState = GameState.RUN;
+    }
+
+    static public void SetFight(RaycastHit hit) 
+    {
+        if (hit.transform.gameObject.layer == LayerMask.NameToLayer("enemy"))
+        {
+            m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
+            m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
+            gameState = GameState.FIGHT;
+        }
+        else 
+        {
+            SetAim();
+            Destroy(hit.transform.gameObject);
+        }
+    }
    
     static public bool IsAim()
     {
