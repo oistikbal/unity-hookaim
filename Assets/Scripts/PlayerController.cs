@@ -46,5 +46,4 @@ public class PlayerController : Singleton<PlayerController>
         }
         GameManager.Instance.SetFight(hit);
     }
-
 }
