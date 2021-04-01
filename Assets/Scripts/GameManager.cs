@@ -29,6 +29,10 @@ public class GameManager : Singleton<GameManager>
 
     static public GameState CurrentState() { return gameState; }
 
+    static public void SetMenu() { gameState = GameState.MENU; }
+
+    static public void SetStop() { gameState = GameState.STOP; }
+
     static public void SetAim() 
     {
         m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
@@ -37,10 +41,6 @@ public class GameManager : Singleton<GameManager>
         Arrow.Instance.gameObject.SetActive(true);
         gameState = GameState.AIM;
     }
-
-    static public void SetMenu() { gameState = GameState.MENU; }
-
-    static public void SetStop() { gameState = GameState.STOP; }
 
     static public void SetRun()
     {
@@ -99,7 +99,6 @@ public class GameManager : Singleton<GameManager>
         }
         Destroy(hit.transform.gameObject);
         SetAim();
-        yield return null;
     }
 
 }
