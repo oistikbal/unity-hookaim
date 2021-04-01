@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GameManager : Singleton<GameManager>
 {
     /*  Default Cam priorties
@@ -30,8 +31,9 @@ public class GameManager : Singleton<GameManager>
 
     static public void SetAim() 
     {
-        m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
+        m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
         m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
+        m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         Arrow.Instance.gameObject.SetActive(true);
         gameState = GameState.AIM;
     }
@@ -48,13 +50,14 @@ public class GameManager : Singleton<GameManager>
         gameState = GameState.RUN;
     }
 
-    static public void SetFight(RaycastHit hit) 
+    public void SetFight(RaycastHit hit) 
     {
         if (hit.transform.gameObject.layer == LayerMask.NameToLayer("enemy"))
         {
             m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
             m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
             gameState = GameState.FIGHT;
+            StartCoroutine(GameManager.Instance.Fight(hit));
         }
         else 
         {
@@ -85,6 +88,18 @@ public class GameManager : Singleton<GameManager>
             return true;
 
         return false;
+    }
+
+    IEnumerator Fight(RaycastHit hit) 
+    {
+        while (hit.transform.GetComponent<Enemy>().m_health != 0)
+        {
+            yield return new WaitForSeconds(1.0f);
+            hit.transform.GetComponent<Enemy>().m_health--;
+        }
+        Destroy(hit.transform.gameObject);
+        SetAim();
+        yield return null;
     }
 
 }
