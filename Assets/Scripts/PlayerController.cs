@@ -43,7 +43,7 @@ public class PlayerController : Singleton<PlayerController>
     IEnumerator Move(RaycastHit hit) 
     {
         GameManager.Instance.SetRun();
-        transform.rotation = Quaternion.LookRotation(hit.transform.position);
+        transform.LookAt(hit.transform.position);
         while (transform.position != hit.point)
         {
             if (Mathf.Abs(transform.position.z - hit.point.z) < 2f)

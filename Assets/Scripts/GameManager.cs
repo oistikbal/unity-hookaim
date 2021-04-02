@@ -134,6 +134,7 @@ public class GameManager : Singleton<GameManager>
         hit.transform.GetComponent<Animator>().SetBool("idle", false);
         hit.transform.GetComponent<Animator>().SetBool("die", true);
         yield return new WaitForSeconds(1.5f);
+        hit.transform.GetComponent<BoxCollider>().enabled = false;
         Destroy(hit.transform.gameObject, 5f);
         SetAim();
     }
@@ -141,6 +142,7 @@ public class GameManager : Singleton<GameManager>
     IEnumerator Kick(RaycastHit hit)
     {
         yield return new WaitForSeconds(1.5f);
+        hit.transform.GetComponent<BoxCollider>().enabled = false;
         Destroy(hit.transform.gameObject, 5f);
         SetAim();
     }
