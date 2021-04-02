@@ -42,7 +42,6 @@ public class PlayerController : Singleton<PlayerController>
 
     IEnumerator Move(RaycastHit hit) 
     {
-
         GameManager.SetRun();
         while (transform.position != hit.point)
         {

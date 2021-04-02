@@ -12,7 +12,7 @@ public class GameManager : Singleton<GameManager>
      */
     protected GameManager() { }
 
-    public enum GameState {AIM, RUN, FIGHT, MENU, STOP }
+    public enum GameState {AIM, RUN, FIGHT,KICK, MENU, STOP }
     private static GameState gameState;
 
     static GameObject m_camAim;
@@ -39,6 +39,7 @@ public class GameManager : Singleton<GameManager>
         m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         Arrow.Instance.gameObject.SetActive(true);
         gameState = GameState.AIM;
+
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
@@ -48,9 +49,11 @@ public class GameManager : Singleton<GameManager>
     static public void SetRun()
     {
         m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
+        m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
         m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         Arrow.Instance.gameObject.SetActive(false);
         gameState = GameState.RUN;
+
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
@@ -59,16 +62,33 @@ public class GameManager : Singleton<GameManager>
 
     public void SetFight(RaycastHit hit) 
     {
-        if (hit.transform.gameObject.layer == LayerMask.NameToLayer("enemy"))
+        if(hit.transform.GetComponent<Enemy>() && hit.transform.GetComponent<Enemy>().m_health == 1f)
         {
-            m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
+            m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
             m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
+            m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
+            gameState = GameState.KICK;
+
+            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
+            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
+            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
+            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", true);
+
+            StartCoroutine(GameManager.Instance.Kick(hit));
+        }
+        else if (hit.transform.GetComponent<Enemy>())
+        {
+            m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
+            m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
+            m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
             gameState = GameState.FIGHT;
-            StartCoroutine(GameManager.Instance.Fight(hit));
+
             PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
             PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
             PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
             PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", true);
+
+            StartCoroutine(GameManager.Instance.Fight(hit));
         }
         else 
         {
@@ -99,6 +119,13 @@ public class GameManager : Singleton<GameManager>
             return true;
 
         return false;
+    }
+
+    IEnumerator Kick(RaycastHit hit)
+    {
+        yield return new WaitForSeconds(1.5f);
+        Destroy(hit.transform.gameObject);
+        SetAim();
     }
 
     IEnumerator Fight(RaycastHit hit) 
