@@ -33,7 +33,7 @@ public class PlayerController : Singleton<PlayerController>
     {
         RaycastHit hit;
         int mask = 1 << LayerMask.NameToLayer("enemy") | 1 << LayerMask.NameToLayer("box");
-        if (GameManager.IsAim() && Physics.Raycast(transform.position, Arrow.Instance.transform.forward, out hit, 100f, mask))
+        if (GameManager.Instance.IsAim() && Physics.Raycast(transform.position, Arrow.Instance.transform.forward, out hit, 100f, mask))
         {
             if (Mathf.Abs(transform.position.z - hit.point.z) > 2f)
                 StartCoroutine(Move(hit));
@@ -42,7 +42,8 @@ public class PlayerController : Singleton<PlayerController>
 
     IEnumerator Move(RaycastHit hit) 
     {
-        GameManager.SetRun();
+        GameManager.Instance.SetRun();
+        transform.rotation = Quaternion.LookRotation(hit.transform.position);
         while (transform.position != hit.point)
         {
             if (Mathf.Abs(transform.position.z - hit.point.z) < 2f)

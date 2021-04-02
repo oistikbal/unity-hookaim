@@ -26,13 +26,13 @@ public class GameManager : Singleton<GameManager>
         m_camFight = GameObject.Find("CamFight");
     }
 
-    static public GameState CurrentState() { return gameState; }
+    public GameState CurrentState() { return gameState; }
 
-    static public void SetMenu() { gameState = GameState.MENU; }
+    public void SetMenu() { gameState = GameState.MENU; }
 
-    static public void SetStop() { gameState = GameState.STOP; }
+    public void SetStop() { gameState = GameState.STOP; }
 
-    static public void SetAim() 
+    public void SetAim() 
     {
         m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
         m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
@@ -46,7 +46,7 @@ public class GameManager : Singleton<GameManager>
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", true);
     }
 
-    static public void SetRun()
+    public void SetRun()
     {
         m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
         m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
@@ -58,6 +58,7 @@ public class GameManager : Singleton<GameManager>
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
         PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", true);
+
     }
 
     public void SetFight(RaycastHit hit) 
@@ -97,7 +98,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
    
-    static public bool IsAim()
+    public bool IsAim()
     {
         if (gameState == GameState.AIM)
             return true;
@@ -105,7 +106,7 @@ public class GameManager : Singleton<GameManager>
         return false;
     }
 
-    static public bool IsRun()
+    public bool IsRun()
     {
         if (gameState == GameState.RUN)
             return true;
@@ -113,7 +114,7 @@ public class GameManager : Singleton<GameManager>
         return false;
     }
 
-    static public bool IsFight()
+    public bool IsFight()
     {
         if (gameState == GameState.FIGHT)
             return true;
