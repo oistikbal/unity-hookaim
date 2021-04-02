@@ -13,11 +13,11 @@ public class GameManager : Singleton<GameManager>
     protected GameManager() { }
 
     public enum GameState {AIM, RUN, FIGHT,KICK, MENU, STOP }
-    private static GameState gameState;
+    private GameState gameState;
 
-    static GameObject m_camAim;
-    static GameObject m_camRun;
-    static GameObject m_camFight;
+    GameObject m_camAim;
+    GameObject m_camRun;
+    GameObject m_camFight;
 
     void Start()
     {
@@ -63,7 +63,7 @@ public class GameManager : Singleton<GameManager>
 
     public void SetFight(RaycastHit hit) 
     {
-        if(hit.transform.GetComponent<Enemy>() && hit.transform.GetComponent<Enemy>().m_health == 1f)
+        if(hit.transform.GetComponent<Enemy>() && hit.transform.GetComponent<Enemy>().m_health == 1f) // 1hp enemy
         {
             m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
             m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
@@ -80,7 +80,7 @@ public class GameManager : Singleton<GameManager>
             hit.transform.GetComponent<Animator>().SetBool("die", true);
 
         }
-        else if (hit.transform.GetComponent<Enemy>())
+        else if (hit.transform.GetComponent<Enemy>())// more than 1 hp enemy
         {
             m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
             m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
@@ -97,37 +97,12 @@ public class GameManager : Singleton<GameManager>
 
             StartCoroutine(GameManager.Instance.Fight(hit));
         }
-        else 
+        else //box
         {
-            SetAim();
-            Destroy(hit.transform.gameObject);
+            StartCoroutine(hit.transform.GetComponent<Box>().Explode());
         }
     }
    
-    public bool IsAim()
-    {
-        if (gameState == GameState.AIM)
-            return true;
-
-        return false;
-    }
-
-    public bool IsRun()
-    {
-        if (gameState == GameState.RUN)
-            return true;
-
-        return false;
-    }
-
-    public bool IsFight()
-    {
-        if (gameState == GameState.FIGHT)
-            return true;
-
-        return false;
-    }
-
     IEnumerator Die(RaycastHit hit) 
     {
         hit.transform.GetComponent<Animator>().SetBool("fight", false);
@@ -155,5 +130,29 @@ public class GameManager : Singleton<GameManager>
             hit.transform.GetComponent<Enemy>().m_health--;
         }
         StartCoroutine(Die(hit));
+    }
+
+    public bool IsAim()
+    {
+        if (gameState == GameState.AIM)
+            return true;
+
+        return false;
+    }
+
+    public bool IsRun()
+    {
+        if (gameState == GameState.RUN)
+            return true;
+
+        return false;
+    }
+
+    public bool IsFight()
+    {
+        if (gameState == GameState.FIGHT)
+            return true;
+
+        return false;
     }
 }
