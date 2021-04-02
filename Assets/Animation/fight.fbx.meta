@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 1a627f38a3565c441a662bd71854dc0d
+guid: 0d3c6dfc120758b4b8bfac3a0494ce0c
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: idle
+    second: fight
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -35,18 +35,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: idle
+      name: fight
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 109
+      lastFrame: 140
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0

@@ -8,6 +8,14 @@ public class PlayerController : Singleton<PlayerController>
     protected PlayerController() { }
     Vector3 m_velocityBuffer;
 
+    public GameObject playerModel 
+    {
+        get 
+        {
+            return transform.GetChild(0).gameObject;
+        }
+    }
+
     void Update()
     {
         PlayerInput();

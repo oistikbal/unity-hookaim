@@ -39,6 +39,10 @@ public class GameManager : Singleton<GameManager>
         m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         Arrow.Instance.gameObject.SetActive(true);
         gameState = GameState.AIM;
+        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
+        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
+        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
+        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", true);
     }
 
     static public void SetRun()
@@ -47,6 +51,10 @@ public class GameManager : Singleton<GameManager>
         m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         Arrow.Instance.gameObject.SetActive(false);
         gameState = GameState.RUN;
+        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
+        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
+        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
+        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", true);
     }
 
     public void SetFight(RaycastHit hit) 
@@ -57,6 +65,10 @@ public class GameManager : Singleton<GameManager>
             m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
             gameState = GameState.FIGHT;
             StartCoroutine(GameManager.Instance.Fight(hit));
+            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
+            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
+            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
+            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", true);
         }
         else 
         {
