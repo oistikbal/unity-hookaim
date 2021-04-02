@@ -76,6 +76,9 @@ public class GameManager : Singleton<GameManager>
             PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", true);
 
             StartCoroutine(GameManager.Instance.Kick(hit));
+            hit.transform.GetComponent<Animator>().SetBool("idle", false);
+            hit.transform.GetComponent<Animator>().SetBool("die", true);
+
         }
         else if (hit.transform.GetComponent<Enemy>())
         {
@@ -88,6 +91,9 @@ public class GameManager : Singleton<GameManager>
             PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
             PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
             PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", true);
+
+            hit.transform.GetComponent<Animator>().SetBool("idle", false);
+            hit.transform.GetComponent<Animator>().SetBool("fight", true);
 
             StartCoroutine(GameManager.Instance.Fight(hit));
         }
@@ -122,10 +128,20 @@ public class GameManager : Singleton<GameManager>
         return false;
     }
 
+    IEnumerator Die(RaycastHit hit) 
+    {
+        hit.transform.GetComponent<Animator>().SetBool("fight", false);
+        hit.transform.GetComponent<Animator>().SetBool("idle", false);
+        hit.transform.GetComponent<Animator>().SetBool("die", true);
+        yield return new WaitForSeconds(1.5f);
+        Destroy(hit.transform.gameObject, 5f);
+        SetAim();
+    }
+
     IEnumerator Kick(RaycastHit hit)
     {
         yield return new WaitForSeconds(1.5f);
-        Destroy(hit.transform.gameObject);
+        Destroy(hit.transform.gameObject, 5f);
         SetAim();
     }
 
@@ -136,7 +152,6 @@ public class GameManager : Singleton<GameManager>
             yield return new WaitForSeconds(1.0f);
             hit.transform.GetComponent<Enemy>().m_health--;
         }
-        Destroy(hit.transform.gameObject);
-        SetAim();
+        StartCoroutine(Die(hit));
     }
 }
