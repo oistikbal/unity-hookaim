@@ -355,7 +355,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.10318897, y: -0.000000001982172, z: 2.0563615e-10, w: 0.9946618}
+  m_LocalRotation: {x: 0.103188954, y: 0.000000027727257, z: -0.000000002876502, w: 0.9946618}
   m_LocalPosition: {x: 4.28, y: 5.55, z: -14.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -442,7 +442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 6.05, y: 2.71, z: 6.11}
+  m_FollowOffset: {x: 4.35, y: 0.64, z: 6.19}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -600,7 +600,7 @@ GameObject:
   - component: {fileID: 1252316893}
   - component: {fileID: 1252316894}
   m_Layer: 0
-  m_Name: CamRun
+  m_Name: CamFly
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -613,8 +613,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1252316892}
-  m_LocalRotation: {x: -0.037488602, y: 0.9257936, z: -0.09538151, w: -0.3638725}
-  m_LocalPosition: {x: 2.8400474, y: 10.211716, z: 4.855076}
+  m_LocalRotation: {x: -0.008394813, y: 0.9488458, z: -0.025318166, w: -0.31461132}
+  m_LocalPosition: {x: 1.1400476, y: 8.141716, z: 4.9350758}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1144204757}
@@ -876,7 +876,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1613526555}
-  m_LocalRotation: {x: 0.10318897, y: -0.000000001982172, z: 2.0563615e-10, w: 0.9946618}
+  m_LocalRotation: {x: 0.103188954, y: 0.000000027727257, z: -0.000000002876502, w: 0.9946618}
   m_LocalPosition: {x: -3.2099524, y: 12.051716, z: -8.644924}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1099,7 +1099,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1917305703}
-  m_LocalRotation: {x: 0.04077455, y: -0.7883706, z: 0.052560154, w: 0.6115936}
+  m_LocalRotation: {x: 0.040774558, y: -0.7883706, z: 0.05256018, w: 0.6115936}
   m_LocalPosition: {x: 6.790048, y: 10.001716, z: 3.3850756}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1211,6 +1211,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4736024213960425633, guid: 31fea65c073f9d6418ae8490f0513a04, type: 3}
+      propertyPath: m_turnSpeed
+      value: 1.5707964
+      objectReference: {fileID: 0}
     - target: {fileID: 4736024215365128329, guid: 31fea65c073f9d6418ae8490f0513a04, type: 3}
       propertyPath: m_RootOrder
       value: 6

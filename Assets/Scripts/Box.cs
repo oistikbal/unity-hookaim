@@ -13,7 +13,11 @@ public class Box : MonoBehaviour
 
     public IEnumerator Explode() 
     {
+        GameManager.Instance.m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
+        GameManager.Instance.m_camFly.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
+        GameManager.Instance.m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         GameManager.Instance.SetAim();
+        yield return new WaitForSeconds(0.8f);
         foreach (var particle in m_particles) 
         {
             particle.gameObject.AddComponent<BoxCollider>();
