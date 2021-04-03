@@ -52,6 +52,7 @@ public class Arrow : Singleton<Arrow>
 
     void Start()
     {
+        Debug.Log(Instance);
         m_relativePosition = transform.position - PlayerController.Instance.transform.position;
     }
 

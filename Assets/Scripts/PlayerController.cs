@@ -16,6 +16,10 @@ public class PlayerController : Singleton<PlayerController>
         }
     }
 
+    void Start()
+    {
+    }
+
     void Update()
     {
         PlayerInput();
