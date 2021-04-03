@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
@@ -34,46 +33,51 @@ public class GameManager : Singleton<GameManager>
 
     public void SetAim() 
     {
+        Animator playerAnimator = PlayerController.Instance.playerModel.GetComponent<Animator>();
         m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
         m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
         m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         Arrow.Instance.gameObject.SetActive(true);
         gameState = GameState.AIM;
 
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", true);
+        playerAnimator.SetBool("run", false);
+        playerAnimator.SetBool("fight", false);
+        playerAnimator.SetBool("kick", false);
+        playerAnimator.SetBool("idle", true);
     }
 
     public void SetRun()
     {
+        Animator playerAnimator = PlayerController.Instance.playerModel.GetComponent<Animator>();
         m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
         m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
         m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         Arrow.Instance.gameObject.SetActive(false);
         gameState = GameState.RUN;
 
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", true);
+        playerAnimator.SetBool("idle", false);
+        playerAnimator.SetBool("fight", false);
+        playerAnimator.SetBool("kick", false);
+        playerAnimator.SetBool("run", true);
 
     }
 
     public void SetFight(RaycastHit hit) 
     {
-        if(hit.transform.GetComponent<Enemy>() && hit.transform.GetComponent<Enemy>().m_health == 1f) // 1hp enemy
+        Animator playerAnimator = PlayerController.Instance.playerModel.GetComponent<Animator>();
+
+
+        if (hit.transform.GetComponent<Enemy>() && hit.transform.GetComponent<Enemy>().m_health == 1f) // 1hp enemy
         {
             m_camRun.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
             m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
             m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
             gameState = GameState.KICK;
 
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", true);
+            playerAnimator.SetBool("idle", false);
+            playerAnimator.SetBool("run", false);
+            playerAnimator.SetBool("fight", false);
+            playerAnimator.SetBool("kick", true);
 
             StartCoroutine(GameManager.Instance.Kick(hit));
             hit.transform.GetComponent<Animator>().SetBool("idle", false);
@@ -87,10 +91,10 @@ public class GameManager : Singleton<GameManager>
             m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
             gameState = GameState.FIGHT;
 
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("run", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", true);
+            playerAnimator.SetBool("idle", false);
+            playerAnimator.SetBool("run", false);
+            playerAnimator.SetBool("kick", false);
+            playerAnimator.SetBool("fight", true);
 
             hit.transform.GetComponent<Animator>().SetBool("idle", false);
             hit.transform.GetComponent<Animator>().SetBool("fight", true);
