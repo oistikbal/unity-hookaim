@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//this script isn't needed to have done with this way. this is just for learning purposes
 struct Angle
 {
     private const float m_ClampMaximum = Mathf.PI / 2f;
