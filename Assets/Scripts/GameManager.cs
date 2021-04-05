@@ -19,11 +19,14 @@ public class GameManager : Singleton<GameManager>
     public GameObject m_camFly;
     public GameObject m_camFight;
 
+    Animator m_playerAnimator;
+
     void Start()
     {
         m_camAim = GameObject.Find("CamAim");
         m_camFly = GameObject.Find("CamFly");
         m_camFight = GameObject.Find("CamFight");
+        m_playerAnimator = PlayerController.Instance.playerAnimator;
     }
 
     public GameState CurrentState() { return gameState; }
@@ -40,10 +43,10 @@ public class GameManager : Singleton<GameManager>
         Arrow.Instance.gameObject.SetActive(true);
         gameState = GameState.AIM;
 
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fly", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", true);
+        m_playerAnimator.SetBool("fly", false);
+        m_playerAnimator.SetBool("fight", false);
+        m_playerAnimator.SetBool("kick", false);
+        m_playerAnimator.SetBool("idle", true);
     }
 
     public void SetRun()
@@ -53,11 +56,12 @@ public class GameManager : Singleton<GameManager>
         m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
         Arrow.Instance.gameObject.SetActive(false);
         gameState = GameState.RUN;
+        Animator playerAnimator = PlayerController.Instance.playerAnimator;
 
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
-        PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fly", true);
+        m_playerAnimator.SetBool("idle", false);
+        m_playerAnimator.SetBool("fight", false);
+        m_playerAnimator.SetBool("kick", false);
+        m_playerAnimator.SetBool("fly", true);
 
     }
 
@@ -70,10 +74,11 @@ public class GameManager : Singleton<GameManager>
             m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
             gameState = GameState.FIGHT;
 
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fly", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", true);
+
+            m_playerAnimator.SetBool("idle", false);
+            m_playerAnimator.SetBool("fly", false);
+            m_playerAnimator.SetBool("fight", false);
+            m_playerAnimator.SetBool("kick", true);
 
             StartCoroutine(GameManager.Instance.Kick(hit));
             hit.transform.GetComponent<Animator>().SetBool("idle", false);
@@ -87,10 +92,10 @@ public class GameManager : Singleton<GameManager>
             m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
             gameState = GameState.FIGHT;
 
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("idle", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fly", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("kick", false);
-            PlayerController.Instance.playerModel.GetComponent<Animator>().SetBool("fight", true);
+            m_playerAnimator.SetBool("idle", false);
+            m_playerAnimator.SetBool("fly", false);
+            m_playerAnimator.SetBool("kick", false);
+            m_playerAnimator.SetBool("fight", true);
 
             hit.transform.GetComponent<Animator>().SetBool("idle", false);
             hit.transform.GetComponent<Animator>().SetBool("fight", true);

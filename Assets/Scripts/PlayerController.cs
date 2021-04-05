@@ -7,12 +7,25 @@ public class PlayerController : Singleton<PlayerController>
 {
     protected PlayerController() { }
     Vector3 m_velocityBuffer;
+    Animator m_animator;
 
     public GameObject playerModel 
     {
         get 
         {
             return transform.GetChild(0).gameObject;
+        }
+    }
+
+    public Animator playerAnimator
+    {
+        get 
+        {
+            if (!m_animator) 
+            {
+                m_animator = playerModel.GetComponent<Animator>();
+            }
+            return m_animator;
         }
     }
 
