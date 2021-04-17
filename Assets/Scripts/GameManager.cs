@@ -1,146 +1,179 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    /*  Default Cam priorties
-     *  Current = 10
-     *  Aim = 5
-     *  Run = 4
-     *  fight = 3
-     */
     protected GameManager() { }
 
     public enum GameState {AIM, RUN, FIGHT, MENU, STOP }
-    private GameState gameState;
+    public enum PlayerAnimationState { IDLE,FLY,FIGHT,KICK}
+    public enum EnemyAnimationState { IDLE,FIGHT,DIE}
+    private GameState m_gameState;
 
-    public GameObject m_camAim;
-    public GameObject m_camFly;
-    public GameObject m_camFight;
+    private List<GameObject> m_cameras = new List<GameObject>();
 
-    Animator m_playerAnimator;
+    GameObject m_camAim;
+    GameObject m_camFly;
+    GameObject m_camFight;
 
     void Start()
     {
-        m_camAim = GameObject.Find("CamAim");
-        m_camFly = GameObject.Find("CamFly");
-        m_camFight = GameObject.Find("CamFight");
-        m_playerAnimator = PlayerController.Instance.playerAnimator;
+        StoreCameras();
     }
 
-    public GameState CurrentState() { return gameState; }
+    public GameState CurrentState() { return m_gameState; }
 
-    public void SetMenu() { gameState = GameState.MENU; }
+    public void SetMenu() { m_gameState = GameState.MENU; }
 
-    public void SetStop() { gameState = GameState.STOP; }
+    public void SetStop() { m_gameState = GameState.STOP; }
 
     public void SetAim() 
     {
-        m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
-        m_camFly.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
-        m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
+        m_gameState = GameState.AIM;
         Arrow.Instance.gameObject.SetActive(true);
-        gameState = GameState.AIM;
 
-        m_playerAnimator.SetBool("fly", false);
-        m_playerAnimator.SetBool("fight", false);
-        m_playerAnimator.SetBool("kick", false);
-        m_playerAnimator.SetBool("idle", true);
+        SetActiveCamera(m_camAim);
+        SetPlayerActiveAnimation(PlayerAnimationState.IDLE);
     }
 
     public void SetRun()
     {
-        m_camFly.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
-        m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
-        m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 3;
+        m_gameState = GameState.RUN;
+        
         Arrow.Instance.gameObject.SetActive(false);
-        gameState = GameState.RUN;
-        Animator playerAnimator = PlayerController.Instance.playerAnimator;
-
-        m_playerAnimator.SetBool("idle", false);
-        m_playerAnimator.SetBool("fight", false);
-        m_playerAnimator.SetBool("kick", false);
-        m_playerAnimator.SetBool("fly", true);
-
+        SetActiveCamera(m_camFly);
+        SetPlayerActiveAnimation(PlayerAnimationState.FLY);
     }
 
-    public void SetFight(RaycastHit hit) 
+    public void SetFight(GameObject enemy) 
     {
-        if(hit.transform.GetComponent<Enemy>() && hit.transform.GetComponent<Enemy>().m_health == 1f) // 1hp enemy
+        Enemy enemyComponent = enemy.GetComponent<Enemy>();
+
+        if(enemyComponent && enemyComponent.m_health == 1f) // 1hp enemy
         {
-            m_camFly.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
-            m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
-            m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
-            gameState = GameState.FIGHT;
+            m_gameState = GameState.FIGHT;
 
-
-            m_playerAnimator.SetBool("idle", false);
-            m_playerAnimator.SetBool("fly", false);
-            m_playerAnimator.SetBool("fight", false);
-            m_playerAnimator.SetBool("kick", true);
-
-            StartCoroutine(GameManager.Instance.Kick(hit));
-            hit.transform.GetComponent<Animator>().SetBool("idle", false);
-            hit.transform.GetComponent<Animator>().SetBool("die", true);
-
+            SetActiveCamera(m_camFight);
+            SetPlayerActiveAnimation(PlayerAnimationState.KICK);
+            SetEnemyActiveAnimation(EnemyAnimationState.DIE, enemy);
+           
+            StartCoroutine(GameManager.Instance.Kick(enemy));
         }
-        else if (hit.transform.GetComponent<Enemy>())// more than 1 hp enemy
+        else if (enemyComponent)// more than 1 hp enemy
         {
-            m_camFight.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 10;
-            m_camFly.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 4;
-            m_camAim.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = 5;
-            gameState = GameState.FIGHT;
+            m_gameState = GameState.FIGHT;
 
-            m_playerAnimator.SetBool("idle", false);
-            m_playerAnimator.SetBool("fly", false);
-            m_playerAnimator.SetBool("kick", false);
-            m_playerAnimator.SetBool("fight", true);
+            SetActiveCamera(m_camFight);
+            SetPlayerActiveAnimation(PlayerAnimationState.FIGHT);
+            SetEnemyActiveAnimation(EnemyAnimationState.FIGHT, enemy);
 
-            hit.transform.GetComponent<Animator>().SetBool("idle", false);
-            hit.transform.GetComponent<Animator>().SetBool("fight", true);
-
-            StartCoroutine(GameManager.Instance.Fight(hit));
+            StartCoroutine(GameManager.Instance.Fight(enemy));
         }
         else //box
         {
-            StartCoroutine(GameManager.Instance.Kick(hit));
-            StartCoroutine(hit.transform.GetComponent<Box>().Explode());
+            StartCoroutine(GameManager.Instance.Kick(enemy));
+            StartCoroutine(enemy.transform.GetComponent<Box>().Explode());
         }
     }
    
-    IEnumerator Die(RaycastHit hit) 
+    IEnumerator Die(GameObject enemy) 
     {
-        hit.transform.GetComponent<Animator>().SetBool("fight", false);
-        hit.transform.GetComponent<Animator>().SetBool("idle", false);
-        hit.transform.GetComponent<Animator>().SetBool("die", true);
+        SetEnemyActiveAnimation(EnemyAnimationState.DIE, enemy);
         yield return new WaitForSeconds(1.5f);
-        hit.transform.GetComponent<BoxCollider>().enabled = false;
-        Destroy(hit.transform.gameObject, 5f);
+        enemy.transform.GetComponent<BoxCollider>().enabled = false;
+        Destroy(enemy, 5f);
         SetAim();
     }
 
-    IEnumerator Kick(RaycastHit hit)
+    IEnumerator Kick(GameObject enemy)
     {
         yield return new WaitForSeconds(1.5f);
-        hit.transform.GetComponent<BoxCollider>().enabled = false;
-        Destroy(hit.transform.gameObject, 5f);
+        enemy.transform.GetComponent<BoxCollider>().enabled = false;
+        Destroy(enemy, 5f);
         SetAim();
     }
 
-    IEnumerator Fight(RaycastHit hit) 
+    IEnumerator Fight(GameObject enemy) 
     {
-        while (hit.transform.GetComponent<Enemy>().m_health != 0)
+        Enemy enemyComponent = enemy.GetComponent<Enemy>();
+        while (enemyComponent.m_health != 0)
         {
             yield return new WaitForSeconds(1.0f);
-            hit.transform.GetComponent<Enemy>().m_health--;
+            enemyComponent.m_health--;
         }
-        StartCoroutine(Die(hit));
+        StartCoroutine(Die(enemy));
+    }
+
+    public void StoreCameras()
+    {
+        m_camAim = GameObject.Find("CamAim");
+        m_camFly = GameObject.Find("CamFly");
+        m_camFight = GameObject.Find("CamFight");
+
+        m_cameras.Add(m_camAim);
+        m_cameras.Add(m_camFight);
+        m_cameras.Add(m_camFly);
+    }
+
+    public void SetActiveCamera(GameObject activeCamera)
+    {
+        int priority = m_cameras.Count;
+        foreach (var camera in m_cameras)
+        {
+            if (camera == activeCamera)
+            {
+                camera.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = m_cameras.Count;
+                priority--;
+            }
+            else
+            {
+                priority--;
+                camera.GetComponent<Cinemachine.CinemachineVirtualCamera>().m_Priority = priority;
+            }
+        }
+    }
+
+    public void SetPlayerActiveAnimation(PlayerAnimationState animationState)
+    {
+        Animator playerAnimator = PlayerController.Instance.playerAnimator;
+        string animationName = Enum.GetName(typeof(PlayerAnimationState), animationState);
+
+        foreach (string animation in Enum.GetNames(typeof(PlayerAnimationState)))
+        {
+            if (animation == animationName)
+            {
+                playerAnimator.SetInteger(animation, 1);
+            }
+            else
+            {
+                playerAnimator.SetInteger(animation, 0);
+            }
+        }
+    }
+
+    public void SetEnemyActiveAnimation(EnemyAnimationState animationState, GameObject enemy)
+    {
+        Animator enemyAnimator = enemy.GetComponent<Animator>();
+        string animationName = Enum.GetName(typeof(EnemyAnimationState), animationState);
+
+        foreach (string animation in Enum.GetNames(typeof(EnemyAnimationState)))
+        {
+            if (animation == animationName)
+            {
+                enemyAnimator.SetInteger(animation, 1);
+            }
+            else
+            {
+                enemyAnimator.SetInteger(animation, 0);
+            }
+        }
     }
 
     public bool IsAim()
     {
-        if (gameState == GameState.AIM)
+        if (m_gameState == GameState.AIM)
             return true;
 
         return false;
@@ -148,7 +181,7 @@ public class GameManager : Singleton<GameManager>
 
     public bool IsRun()
     {
-        if (gameState == GameState.RUN)
+        if (m_gameState == GameState.RUN)
             return true;
 
         return false;
@@ -156,7 +189,7 @@ public class GameManager : Singleton<GameManager>
 
     public bool IsFight()
     {
-        if (gameState == GameState.FIGHT)
+        if (m_gameState == GameState.FIGHT)
             return true;
 
         return false;

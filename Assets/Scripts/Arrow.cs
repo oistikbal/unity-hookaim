@@ -49,7 +49,7 @@ public class Arrow : Singleton<Arrow>
 
     Angle m_angle;
 
-    [SerializeField] float m_turnSpeed = 5f;
+    [SerializeField] float m_turnSpeed = 1.570796f; // 90 degree for second
 
     void Start()
     {

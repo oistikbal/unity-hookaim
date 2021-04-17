@@ -69,6 +69,6 @@ public class PlayerController : Singleton<PlayerController>
             transform.position = Vector3.SmoothDamp(transform.position, hit.point, ref m_velocityBuffer, Time.fixedDeltaTime, 10f);
             yield return null;
         }
-        GameManager.Instance.SetFight(hit);
+        GameManager.Instance.SetFight(hit.transform.gameObject);
     }
 }
